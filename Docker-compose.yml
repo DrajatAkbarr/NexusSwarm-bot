@@ -1,0 +1,28 @@
+services:
+  commander:
+    build: ./commander
+    ports:
+      - "8080:8080"
+    networks:
+      - botnet-network
+
+  soldier:
+    build: ./soldier
+    deploy:
+      replicas: 20
+    environment:
+      - COMMANDER_URL=http://commander:8080
+    depends_on:
+      - commander
+    networks:
+      - botnet-network
+
+  victim:
+    image: nginx:alpine
+    ports:
+      - "9090:80"
+    networks:
+      - botnet-network
+
+networks:
+  botnet-network:
